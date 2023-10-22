@@ -1,17 +1,18 @@
--- Add your sql here
+/* Start with the orders table and work out from there. */
+/*Multiply the subscription price with the subscription length to get the total amount due*/
+/*Group By Cuustomer and sum the amount due 
+to account for customers that have more than one unpaid Fashion Magazine subscriptions*/
+SELECT c.customer_name AS 'Customer', PRINTF(SUM(s.price_per_month * s.subscription_length)) AS 'Amount Due'
+FROM orders AS o
 
-/* Write a SQL query that returns the customer name and 
-total amount due for the customers that have 
-unpaid Fashion Magazine subscriptions. 
+/*Filter the orders table on the orders.order_status column,
+filter the orders on the subscriptions.description column*/
+WHERE o.order_status = 'unpaid' AND s.subscription = 'Fashion Magazine'
 
-Note that the column names in the resulting file 
-need to match the column names in the example below.
-*/
+/*Join the customers table to the orders table to get the customer's name*/
+JOIN customers AS c ON c.customer_id = o.customer_id
 
+/*Join the subscriptions table to the orders table as to get the number of months and subscription length*/
+JOIN subscriptions AS s ON s.subscription_ID = o.subscription_ID
 
-SELECT c.customer_name AS 'Customer', SUM(s.price_per_month * s.subscription_length) AS 'Amount Due'
-FROM customers c
-JOIN orders ON c.customer_id = o.customer_id
-JOIN subscriptions ON o.subscription_id = s.subscription_id
-WHERE o.order_status = 'unpaid' AND s.description = 'Fashion Magazine'
-GROUP BY c.customer_name;
+GROUP BY c.customer_name
